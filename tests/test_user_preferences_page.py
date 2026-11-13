@@ -53,12 +53,36 @@ def test_populate_widgets_ldap_user():
         page.uiAuthSourceLineEdit.text()
         == "Directory account (LDAP / Active Directory)"
     )
-    assert page.uiChangePasswordPushButton.isEnabled() is False
+    assert page.uiChangePasswordPushButton.isEnabled() is True
     assert (
         "Password is managed by your organization's directory"
         in page.uiChangePasswordPushButton.toolTip()
     )
     assert page.uiCopyAccessTokenPushButton.isEnabled() is True
+
+
+def test_change_password_slot_shows_info_for_ldap(monkeypatch):
+    from gns3.qt import QtWidgets
+
+    page = UserPreferencesPage()
+    ldap_data = {
+        "username": "alice",
+        "full_name": "Alice Wonderland",
+        "email": "alice@example.com",
+        "auth_source": "ldap",
+    }
+    page._populateWidgets(ldap_data)
+
+    info_box_called = False
+
+    def mock_information(parent, title, text):
+        nonlocal info_box_called
+        info_box_called = True
+        assert "Password is managed by your organization's directory" in text
+
+    monkeypatch.setattr(QtWidgets.QMessageBox, "information", mock_information)
+    page._changePasswordSlot()
+    assert info_box_called is True
 
 
 def test_disconnect_slot_resets_auth_source():

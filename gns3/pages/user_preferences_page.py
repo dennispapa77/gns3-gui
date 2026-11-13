@@ -65,7 +65,7 @@ class UserPreferencesPage(QtWidgets.QWidget, Ui_UserPreferencesPageWidget):
             self.uiAuthSourceLineEdit.setText(
                 self.tr("Directory account (LDAP / Active Directory)")
             )
-            self.uiChangePasswordPushButton.setEnabled(False)
+            self.uiChangePasswordPushButton.setEnabled(True)
             self.uiChangePasswordPushButton.setToolTip(
                 self.tr(
                     "Password is managed by your organization's directory (LDAP/Active Directory)"
@@ -133,11 +133,11 @@ class UserPreferencesPage(QtWidgets.QWidget, Ui_UserPreferencesPageWidget):
         """
 
         if self._auth_source == "ldap":
-            QtWidgets.QMessageBox.warning(
+            QtWidgets.QMessageBox.information(
                 self,
                 self.tr("Change password"),
                 self.tr(
-                    "Password cannot be changed for directory-authenticated accounts."
+                    "Password is managed by your organization's directory (LDAP/Active Directory)."
                 ),
             )
             return
